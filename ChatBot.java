@@ -40,10 +40,7 @@ public class ChatBot{
       response = transformIWantStatement(statement);
     }else if(findKeyword (statement, "I", 0)>=0 && findKeyword (statement, "you", findKeyword(statement, "I", 0))>=0){
       response = transformIYouStatement(statement);
-    }
-
-    
-    else{
+    }else{
       response = getRandomResponse();
     }
     return response;
