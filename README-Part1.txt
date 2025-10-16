@@ -42,3 +42,9 @@ method to respond to each of these.
 
 Question 1
 What are some unintended issues that can occur with the chatbot?
+
+The chatBot input may trigger one of the keywords that it looks for
+when the input may be completely unrelated to the phrase that it will 
+return for example, if the user says, "My dog just passed away and I do 
+not want to talk about it right now" the chatBot will return, "tell me more
+about you pets."

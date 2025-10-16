@@ -15,11 +15,35 @@ public class ChatBot{
   */
   public String getResponse(String statement){
     String response = "";
-    if(statement.indexOf("no")>=0){
+    statement = statement.trim();
+    if(findKeyword(statement, "no", 0)>=0){
       response = "Why so negative?";
-    }else if(statement.indexOf("mother")>0 ||  statement.indexOf("father")>0 || statement.indexOf("sister")>0 || statement.indexOf("brother")>0){
+    }else if(findKeyword(statement, "mother", 0)>=0 ||  findKeyword(statement, "father", 0)>0 || findKeyword(statement, "sister", 0)>0 || findKeyword(statement, "brother", 0)>0){
       response = "Tell me more about your family.";
-    }else{
+    }else if(findKeyword(statement, "dog", 0)>=0 ||  findKeyword(statement, "cat", 0)>0){
+      response = "Tell me more about your pets.";
+    }else if(findKeyword(statement, "Zeller", 0)>=0 ){
+      response = "Mr. Zeller is very wonderful.";
+    }else if(!(statement.length() >= 0)){
+      response = "Please say something.";
+    }else if(findKeyword(statement, "ice cream", 0)>=0 ){
+      response = "I love ice cream.";
+    }else if(findKeyword(statement, "cake", 0)>=0 ){
+      response = "is it your birthday?";
+    }else if(findKeyword(statement, "reading", 0)>=0 ){
+      response = "reading is fun.";
+    }else if(findKeyword(statement, "I want to", 0)>=0){
+      response = transformIWantToStatement(statement);
+    }else if (findKeyword (statement, "you", 0)>=0 && findKeyword (statement, "me", findKeyword (statement, "you", 0) + 3)>=0){
+      response = transformYouMeStatement(statement);
+    }else if(findKeyword (statement, "I want", 0)>=0 && findKeyword (statement, "I want", 0) + 7 != statement.length()){
+      response = transformIWantStatement(statement);
+    }else if(findKeyword (statement, "I", 0)>=0 && findKeyword (statement, "you", findKeyword(statement, "I", 0))>=0){
+      response = transformIYouStatement(statement);
+    }
+
+    
+    else{
       response = getRandomResponse();
     }
     return response;
@@ -30,7 +54,7 @@ public class ChatBot{
   * @return a non-commital string
   */
   private String getRandomResponse(){
-    int numberOfResponses = 4;
+    int numberOfResponses = 6;
     double r = Math.random();
     int whichResponse = (int)(r*numberOfResponses);
     String response = "";
@@ -43,6 +67,10 @@ public class ChatBot{
       response = "Do you really think so?";
     }else if(whichResponse==3){
       response = "You don't say.";
+    }else if(whichResponse==4){
+      response = "That is something.";
+    }else if(whichResponse==5){
+      response = "Just awsome.";
     }
     return response;
   }
@@ -144,4 +172,53 @@ public class ChatBot{
 		String restOfStatement = statement.substring(psnOfYou + 3, psnOfMe).trim();
 		return "What makes you think that I " + restOfStatement + " you?";
 	}
+
+  /*
+  * Take a statement with "I want <something>" and transform it into
+  * "Would you really be happy if you had <something?>"
+  * @param statement the user statement, assumed to contain "I want" followed by <something>
+  * @return the transformed statement
+  */
+
+ private String transformIWantStatement(String statement){
+  //if there is a period, remove it
+
+  statement = statement.trim();
+		String lastChar = statement.substring(statement.length() - 1);
+		if (lastChar.equals(".")){
+			statement = statement.substring(0, statement.length() - 1);
+		}
+
+    //find position of "I want" statement
+    int psnOfYou = findKeyword (statement, "I want", 0);
+
+    //assemble the return statement
+    String restOfStatement = statement.substring(psnOfYou + 6).trim();
+    return "Would you be really happy if you had " + restOfStatement + "?";
+ }
+ /*
+ * Take is a statement with "I <something> you" and transform it into
+ *"Why do you <something> me?"
+ * @param statement the user statement, assumed to contain "I" followed by <something> followed by "you"
+ * @return the transformed statement
+ */
+
+ private String transformIYouStatement(String statement){
+    // remove period if there is one
+
+    statement = statement.trim();
+		String lastChar = statement.substring(statement.length() - 1);
+		if (lastChar.equals(".")){
+			statement = statement.substring(0, statement.length() - 1);
+		}
+
+    //find position of "I" and "you"
+    int psnOfYou = findKeyword (statement, "you", 0);
+    int psnOfI = findKeyword (statement, "I", 0);
+
+    // assemble the return
+    String restOfStatement = statement.substring(psnOfI + 1, psnOfYou).trim();
+
+    return "Why do you " + restOfStatement + " me?";
+ }
 }
